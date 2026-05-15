@@ -37,21 +37,27 @@ export interface Article {
 }
 
 export const fetchWebsiteArticles = async (): Promise<Article[]> => {
-  const response = await fetch(`${API_URL}/articles/getarticle`);
+  const response = await fetch(`${API_URL}/articles/search`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      onWebsite: true,
+      limit: 1000 // Get all website articles for now, or implement pagination
+    })
+  });
   if (!response.ok) throw new Error('Failed to fetch articles');
   const data = await response.json();
-  // Filter only those that should be on website
-  return data.filter((a: Article) => a.on_website);
+  return data.articles || [];
 };
 
 export const fetchWebsiteCategories = async (): Promise<Category[]> => {
-  const response = await fetch(`${API_URL}/categories/getcategorie`);
+  const response = await fetch(`${API_URL}/categories/getcategorie?onWebsite=true`);
   if (!response.ok) throw new Error('Failed to fetch categories');
   const data = await response.json();
-  // Filter only those that should be on website and sort by order
-  return data
-    .filter((c: Category) => c.on_website)
-    .sort((a: Category, b: Category) => (a.website_order || 0) - (b.website_order || 0));
+  // Sort by order on frontend as order is specific to website
+  return data.sort((a: Category, b: Category) => (a.website_order || 0) - (b.website_order || 0));
 };
 
 export const fetchCarouselSlides = async (): Promise<CarouselSlide[]> => {

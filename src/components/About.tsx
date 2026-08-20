@@ -8,22 +8,22 @@ interface AboutProps {
 
 const About: React.FC<AboutProps> = ({ onNavigate }) => {
   useScrollReveal();
-  
+
   return (
     <div className="page on">
       <div className="ab-hero">
         <div className="ab-hero-b">
-          <div className="ab-tag">Est. 2015</div>
-          <h1 className="ab-tit">We Believe in Beauty<br />That <em>Lasts</em></h1>
+          <div className="ab-tag">Depuis 2015</div>
+          <h1 className="ab-tit">Nous croyons en une beauté<br />qui <em>dure</em></h1>
         </div>
       </div>
 
       <div className="ab-stats">
         {[
-          { n: '12K+', l: 'Happy Customers' },
-          { n: '500+', l: 'Curated Products' },
-          { n: '48', l: 'Countries Shipped' },
-          { n: '4.9★', l: 'Average Rating' }
+          { n: '12K+', l: 'Clients satisfaits' },
+          { n: '500+', l: 'Produits sélectionnés' },
+          { n: '48', l: 'Pays livrés' },
+          { n: '4.9★', l: 'Note moyenne' }
         ].map((s, i) => (
           <div key={i} className={`ab-st rv d${i}`}>
             <div className="ab-sn">{s.n}</div>
@@ -34,40 +34,40 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
 
       <div className="ab-story">
         <div className="ab-si rv">
-          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80&fit=crop" alt="Store" loading="lazy" />
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80&fit=crop" alt="Boutique" loading="lazy" />
         </div>
         <div>
-          <div className="stag"><Heart size={11} /> Our Philosophy</div>
-          <h2 className="stit" style={{ textAlign: 'left' }}>Crafted with <em>Intention</em></h2>
+          <div className="stag"><Heart size={11} /> Notre philosophie</div>
+          <h2 className="stit" style={{ textAlign: 'left' }}>Conçu avec <em>intention</em></h2>
           <p style={{ color: 'var(--g4)', marginTop: '.9rem', lineHeight: 1.88, fontSize: '.9rem', fontWeight: 300 }}>
-            At LUMIÈRE, we don't just curate products — we curate experiences. Every item is handpicked through a rigorous process considering quality, sustainability, and timeless aesthetic appeal.
+            Chez LUMIÈRE, nous ne sélectionnons pas seulement des produits — nous créons des expériences. Chaque article est choisi à la main selon un processus rigoureux qui prend en compte la qualité, la durabilité et une esthétique intemporelle.
           </p>
           <div className="ab-vals">
             <div className="ab-v rv">
               <div className="ab-vi"><Leaf size={19} /></div>
               <div>
-                <h4>Sustainability First</h4>
-                <p>We partner exclusively with brands that share our commitment to ethical sourcing and environmental responsibility.</p>
+                <h4>La durabilité avant tout</h4>
+                <p>Nous travaillons exclusivement avec des marques qui partagent notre engagement pour un approvisionnement éthique et responsable.</p>
               </div>
             </div>
             <div className="ab-v rv d1">
               <div className="ab-vi"><Gem size={19} /></div>
               <div>
-                <h4>Uncompromising Quality</h4>
-                <p>Every product undergoes our 27-point quality check before it ever reaches your door.</p>
+                <h4>Une qualité sans compromis</h4>
+                <p>Chaque produit passe notre contrôle qualité en 27 points avant d'arriver chez vous.</p>
               </div>
             </div>
             <div className="ab-v rv d2">
               <div className="ab-vi"><Users size={19} /></div>
               <div>
-                <h4>Customer-First Always</h4>
-                <p>Your satisfaction is our obsession. We're not happy until you are — guaranteed, no exceptions.</p>
+                <h4>Le client d'abord, toujours</h4>
+                <p>Votre satisfaction est notre obsession. Nous ne sommes satisfaits que lorsque vous l'êtes — garanti, sans exception.</p>
               </div>
             </div>
           </div>
           <div style={{ marginTop: '2.2rem' }}>
             <button className="btn btn-pr" onClick={() => onNavigate('shop')}>
-              Discover Our Collection <ArrowRight size={15} className="arr" />
+              Découvrir notre collection <ArrowRight size={15} className="arr" />
             </button>
           </div>
         </div>
@@ -75,15 +75,15 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
 
       <div className="team-sec">
         <div className="mx shd c">
-          <div className="stag">The People</div>
-          <h2 className="stit">Meet Our <em>Team</em></h2>
+          <div className="stag">Les personnes</div>
+          <h2 className="stit">Notre <em>équipe</em></h2>
         </div>
         <div className="tgd mx">
           {[
-            { n: 'Élise Fontaine', r: 'CEO & Founder', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80&fit=crop&crop=face' },
-            { n: 'Marco Vitale', r: 'Creative Director', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop&crop=face' },
-            { n: 'Yuki Tanaka', r: 'Head of Curation', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80&fit=crop&crop=face' },
-            { n: 'Omar Hassan', r: 'Operations Lead', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80&fit=crop&crop=face' }
+            { n: 'Élise Fontaine', r: 'Directrice générale & fondatrice', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80&fit=crop&crop=face' },
+            { n: 'Marco Vitale', r: 'Directeur artistique', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop&crop=face' },
+            { n: 'Yuki Tanaka', r: 'Responsable de la sélection', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80&fit=crop&crop=face' },
+            { n: 'Omar Hassan', r: 'Responsable des opérations', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80&fit=crop&crop=face' }
           ].map((m, i) => (
             <div key={i} className={`tmc rv d${i}`}>
               <div className="tmp"><img src={m.img} alt={m.n} loading="lazy" /></div>

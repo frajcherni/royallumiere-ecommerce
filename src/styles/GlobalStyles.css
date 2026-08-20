@@ -1,6 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@100;200;300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
+    --font: 'Montserrat', 'Helvetica Neue', Arial;
     --pr: #00adee;
     --pr-d: #008fca;
     --pr-l: #e0f6fd;
@@ -23,6 +24,7 @@
     --shl: 0 24px 64px rgba(0, 0, 0, .16);
     --shb: 0 8px 32px rgba(0, 173, 238, .22);
     --nav: 72px;
+    --topbar: 36px;
 }
 
 *,
@@ -39,7 +41,8 @@ html {
 }
 
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    font-weight: 400;
     background: var(--wh);
     color: var(--bl);
     overflow-x: hidden;
@@ -117,12 +120,27 @@ a {
 }
 
 .ldr-logo {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: 2.6rem;
     font-weight: 300;
     letter-spacing: .3em;
     color: #fff;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
     animation: ldPulse 1.6s ease infinite
+}
+
+.ldr-logo .site-logo-img {
+    width: auto;
+    max-width: min(280px, 70vw);
+    object-fit: contain
+}
+
+.ldr-logo sup {
+    font-size: .4rem;
+    vertical-align: super;
+    letter-spacing: 0
 }
 
 .ldr-bar {
@@ -185,7 +203,7 @@ header.solid {
 }
 
 .logo {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.5rem, 2.5vw, 1.9rem);
     font-weight: 300;
     letter-spacing: .12em;
@@ -450,8 +468,9 @@ nav a.on::after {
 /* ═══════════════════════════ PAGES ═══════════════════════════ */
 .page {
     display: none;
-    padding-top: var(--nav);
-    animation: pgIn .4s ease
+    padding-top: calc(var(--nav) + var(--topbar));
+    /* Page entrance is driven by the AnimatePresence wrapper in App.tsx —
+       keeping the CSS keyframe here too made every navigation animate twice. */
 }
 
 .page.on {
@@ -499,13 +518,14 @@ nav a.on::after {
 
 /* ═══════════════════════════ SECTION ═══════════════════════════ */
 .sec {
-    padding: clamp(3rem, 7vw, 7rem) clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2.5rem);
     max-width: 1440px;
     margin: 0 auto
 }
 
+
 .shd {
-    margin-bottom: clamp(2rem, 4vw, 4rem)
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem)
 }
 
 .shd.c {
@@ -552,7 +572,7 @@ nav a.on::after {
 }
 
 .stit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2rem, 4vw, 3.6rem);
     font-weight: 300;
     line-height: 1.1;
@@ -669,7 +689,7 @@ nav a.on::after {
 }
 
 .htit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2.8rem, 6.5vw, 6.5rem);
     font-weight: 300;
     line-height: 1.0;
@@ -848,13 +868,21 @@ nav a.on::after {
 
 /* ═══════════════════════════ MARQUEE ═══════════════════════════ */
 .mqbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    height: var(--topbar);
     background: var(--bl);
-    padding: .65rem 0;
+    display: flex;
+    align-items: center;
     overflow: hidden
 }
 
 .mqwrap {
     display: flex;
+    flex-shrink: 0;
     white-space: nowrap;
     animation: mq 24s linear infinite
 }
@@ -875,14 +903,8 @@ nav a.on::after {
     color: rgba(255, 255, 255, .55)
 }
 
-.mqi svg {
-    width: 11px;
-    height: 11px;
-    stroke: var(--se);
-    fill: none;
-    stroke-width: 2.5;
-    flex-shrink: 0
-}
+/* The bar used to render a lucide icon per item; markers are CSS-drawn now —
+   see the ANNOUNCEMENT BAR MARKERS block at the end of this file. */
 
 @keyframes mq {
     from {
@@ -1137,7 +1159,7 @@ nav a.on::after {
 }
 
 .pnm {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.05rem, 1.5vw, 1.2rem);
     font-weight: 600;
     color: var(--bl);
@@ -1170,7 +1192,7 @@ nav a.on::after {
 }
 
 .ppr {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: var(--bl)
@@ -1268,7 +1290,7 @@ nav a.on::after {
 }
 
 .nf-tit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.3rem, 2.5vw, 1.8rem);
     font-weight: 600;
     color: #fff;
@@ -1277,7 +1299,7 @@ nav a.on::after {
 }
 
 .nf-pr {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: .95rem;
     color: rgba(255, 255, 255, .8)
 }
@@ -1321,7 +1343,7 @@ nav a.on::after {
 }
 
 .ns-nm {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1rem, 1.8vw, 1.15rem);
     font-weight: 600;
     color: #fff;
@@ -1329,7 +1351,7 @@ nav a.on::after {
 }
 
 .ns-pr {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: .8rem;
     color: rgba(255, 255, 255, .72)
 }
@@ -1437,7 +1459,7 @@ nav a.on::after {
 /* ═══════════════════════════ CATEGORY SECTION ═══════════════════════════ */
 ./* ── Category Section ──────────────────────────────────────── */
 .cat-section {
-  padding: clamp(4rem, 8vw, 8rem) 0;
+  padding: clamp(2rem, 4vw, 4rem) 0;
   background: linear-gradient(to bottom, #fff, var(--ow), #fff);
 }
 
@@ -1445,12 +1467,12 @@ nav a.on::after {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 clamp(1rem, 3vw, 2.5rem);
-  margin-bottom: 3.5rem; /* Increased from 2.5rem */
+  margin-bottom: 2rem;
 }
 
 .cat-section {
   background: #fff;
-  padding: 4rem 0;
+  padding: 2rem 0;
 }
 
 /* ── Outer wrapper (holds arrows + strip) ──────────────────── */
@@ -1708,7 +1730,7 @@ nav a.on::after {
 }
 
 .ofb-tit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.8rem, 4vw, 3.6rem);
     font-weight: 700;
     color: #fff;
@@ -1741,7 +1763,7 @@ nav a.on::after {
 }
 
 .cdn {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.4rem, 3vw, 2rem);
     font-weight: 700;
     color: #fff;
@@ -1798,7 +1820,7 @@ nav a.on::after {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-weight: 700;
     color: var(--bl);
     line-height: 1;
@@ -1855,7 +1877,7 @@ nav a.on::after {
     position: absolute;
     top: .2rem;
     left: 1.2rem;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: 7rem;
     color: var(--pr-l);
     line-height: 1;
@@ -1913,6 +1935,122 @@ nav a.on::after {
     font-weight: 300
 }
 
+/* ═══════════════════════════ BRANDS CAROUSEL ═══════════════════════════ */
+.brands-sec {
+    padding: clamp(3rem, 6vw, 5.5rem) 0;
+    background: #fff;
+    border-top: 1px solid var(--g2);
+}
+
+.brands-wrap {
+    position: relative;
+    padding: 0 clamp(0px, 3vw, 40px);
+}
+
+.brands-track {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: .5rem 0;
+}
+
+.brands-track::-webkit-scrollbar {
+    display: none;
+}
+
+.brand-item {
+    flex: 0 0 auto;
+    width: clamp(150px, 18vw, 210px);
+    height: clamp(80px, 10vw, 110px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.brand-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: .55;
+    transition: filter .35s, opacity .35s, transform .35s;
+}
+
+.brand-item:hover img {
+    filter: grayscale(0);
+    opacity: 1;
+    transform: scale(1.06);
+}
+
+.brand-item.clickable {
+    cursor: pointer;
+}
+
+/* ═══════════════════════════ TESTIMONIALS CAROUSEL ═══════════════════════════ */
+.testi-sec {
+    background: var(--ow);
+    border-top: 1px solid var(--g2);
+    border-bottom: 1px solid var(--g2);
+    padding: clamp(3rem, 6vw, 6rem) 0;
+}
+
+.testi-wrap {
+    position: relative;
+    padding: 0 clamp(0px, 3vw, 30px);
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.testi-track {
+    display: flex;
+    gap: clamp(1rem, 2vw, 1.75rem);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: .5rem 0;
+}
+
+.testi-track::-webkit-scrollbar {
+    display: none;
+}
+
+.tc-img-card {
+    flex: 0 0 auto;
+    width: clamp(280px, 38vw, 400px);
+    margin: 0;
+    background: #fff;
+    border-radius: var(--rx);
+    border: 1px solid var(--g2);
+    overflow: hidden;
+    transition: transform .25s, box-shadow .25s;
+    box-shadow: var(--sh);
+}
+
+.tc-img-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shm);
+}
+
+.tc-img-card img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.tc-img-name {
+    padding: .9rem 1.2rem;
+    font-weight: 700;
+    font-size: .85rem;
+    color: var(--bl);
+    text-align: center;
+}
+
 /* ═══════════════════════════ NEWSLETTER ═══════════════════════════ */
 .nl {
     background: url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1600&q=80&fit=crop') center/cover no-repeat;
@@ -1957,7 +2095,7 @@ nav a.on::after {
 }
 
 .nl-tit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2rem, 4vw, 3.2rem);
     font-weight: 300;
     color: #fff;
@@ -2048,7 +2186,7 @@ nav a.on::after {
 }
 
 .br-hero h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2.2rem, 5vw, 4.5rem);
     font-weight: 300;
     color: #fff;
@@ -2221,7 +2359,7 @@ nav a.on::after {
     display: flex;
     justify-content: space-between;
     font-size: .78rem;
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     color: var(--g4);
     margin-bottom: .75rem
 }
@@ -2329,7 +2467,7 @@ nav a.on::after {
     padding: .48rem .9rem;
     border: 1.5px solid var(--g2);
     border-radius: var(--r);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: .8rem;
     outline: none;
     cursor: pointer;
@@ -2507,7 +2645,7 @@ nav a.on::after {
 }
 
 .sh-hero h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2.2rem, 5vw, 5rem);
     font-weight: 300;
     color: #fff;
@@ -2559,7 +2697,7 @@ nav a.on::after {
     padding: .48rem .9rem;
     border: 1.5px solid var(--g2);
     border-radius: var(--r);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: .8rem;
     outline: none;
     cursor: pointer;
@@ -2604,7 +2742,7 @@ nav a.on::after {
 }
 
 .ab-tit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2.5rem, 6vw, 5.5rem);
     font-weight: 300;
     color: #fff;
@@ -2641,7 +2779,7 @@ nav a.on::after {
 }
 
 .ab-sn {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.8rem, 3vw, 2.6rem);
     font-weight: 700;
     color: var(--pr);
@@ -2795,7 +2933,7 @@ nav a.on::after {
 }
 
 .tmn {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1rem, 1.8vw, 1.2rem);
     font-weight: 700;
     margin-bottom: .2rem
@@ -2837,7 +2975,7 @@ nav a.on::after {
 }
 
 .ct-hero h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2.2rem, 5vw, 5rem);
     font-weight: 300;
     color: #fff;
@@ -2874,7 +3012,7 @@ nav a.on::after {
 }
 
 .ct-info h2 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     font-weight: 300;
     margin-bottom: .7rem;
@@ -2952,7 +3090,7 @@ nav a.on::after {
 }
 
 .ct-form h3 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.4rem, 2.5vw, 1.75rem);
     font-weight: 600;
     margin-bottom: 1.75rem;
@@ -2993,7 +3131,7 @@ nav a.on::after {
     padding: .74rem 1rem;
     border: 1.5px solid var(--g2);
     border-radius: var(--r);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: .86rem;
     background: #fff;
     outline: none;
@@ -3172,7 +3310,7 @@ nav a.on::after {
 }
 
 .dt-tit {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.8rem, 3vw, 2.7rem);
     font-weight: 600;
     line-height: 1.1;
@@ -3225,14 +3363,14 @@ nav a.on::after {
 }
 
 .dt-pr .cu {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.8rem, 3vw, 2.3rem);
     font-weight: 700;
     color: var(--bl)
 }
 
 .dt-pr .ol {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: 1rem;
     color: var(--g3);
     text-decoration: line-through
@@ -3374,7 +3512,7 @@ nav a.on::after {
 .qty-v {
     width: 40px;
     text-align: center;
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-weight: 700;
     font-size: .88rem
 }
@@ -3492,7 +3630,7 @@ nav a.on::after {
 }
 
 .of-hero h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(2.5rem, 6vw, 5.5rem);
     font-weight: 300;
     color: #fff;
@@ -3545,6 +3683,20 @@ nav a.on::after {
     transition: transform .5s
 }
 
+.ofc-promo-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: .3rem .8rem;
+    border-radius: 999px;
+    background: var(--pr);
+    color: #fff;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
 .ofc-disc {
     position: absolute;
     top: 12px;
@@ -3557,7 +3709,7 @@ nav a.on::after {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-weight: 700;
     color: var(--bl);
     line-height: 1;
@@ -3579,7 +3731,7 @@ nav a.on::after {
 }
 
 .ofc-nm {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(1.1rem, 2vw, 1.25rem);
     font-weight: 700;
     margin-bottom: .35rem
@@ -3602,7 +3754,7 @@ nav a.on::after {
 }
 
 .ofc-ps .np {
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font, 'Montserrat'), sans-serif;
     font-size: clamp(.95rem, 1.5vw, 1.1rem);
     font-weight: 700;
     color: var(--pr)
@@ -3649,8 +3801,18 @@ footer {
 
 .ft-brand .logo {
     color: #fff;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    cursor: pointer;
     margin-bottom: 1.1rem
+}
+
+/* Logo uploaded from the ERP (Site Web -> Gestion Logo). */
+.ft-brand .logo .site-logo-img {
+    width: auto;
+    max-width: 190px;
+    object-fit: contain
 }
 
 .ft-brand .logo em {
@@ -3786,4 +3948,1416 @@ footer {
     flex-wrap: wrap
 }
 
+/* ═══════════════ PRODUCT CARD BUTTONS ═══════════════ */
+.padd-primary {
+    background: var(--pr, #00adee) !important;
+    color: #fff !important;
+    border-color: var(--pr, #00adee) !important;
+}
+.padd-primary:hover {
+    background: var(--pr-d, #008fca) !important;
+    border-color: var(--pr-d, #008fca) !important;
+}
 
+.padd-outline {
+    background: transparent !important;
+    color: var(--pr, #00adee) !important;
+    border-color: var(--pr, #00adee) !important;
+}
+.padd-outline:hover {
+    background: rgba(0, 173, 238, 0.08) !important;
+    border-color: var(--pr-d, #008fca) !important;
+    color: var(--pr-d, #008fca) !important;
+}
+
+/* ═══════════════ CART QUICK-ADD BUTTON ═══════════════ */
+.pc-qa {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ═══════════════ NEW ARRIVALS — SPLIT FEATURE ═══════════════ */
+.na-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+}
+
+/* LEFT — big featured tile */
+.na-feature {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+.na-feature-img {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: var(--rl);
+    background: var(--g1);
+}
+.na-feature-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s cubic-bezier(.16, 1, .3, 1);
+}
+.na-feature:hover .na-feature-img img {
+    transform: scale(1.04);
+}
+
+/* RIGHT — 2x2 grid */
+.na-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+.na-cell {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    min-height: 0;
+}
+.na-cell-img {
+    flex: 1;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--rl);
+    background: var(--g1);
+}
+.na-cell-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s cubic-bezier(.16, 1, .3, 1);
+}
+.na-cell:hover .na-cell-img img {
+    transform: scale(1.05);
+}
+
+/* centered label below each image */
+.na-label {
+    text-align: center;
+    padding: .9rem .5rem .25rem;
+}
+.na-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--g4);
+    line-height: 1.3;
+    margin-bottom: .2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.na-feature .na-name {
+    font-size: 1.1rem;
+}
+.na-price {
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--pr-d);
+}
+
+/* responsive */
+@media (max-width: 860px) {
+    .na-split {
+        grid-template-columns: 1fr;
+    }
+    .na-feature-img {
+        min-height: 320px;
+    }
+}
+
+/* ═══════════════ ADD TO CART TOAST ═══════════════ */
+@keyframes cartPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+.cart-badge-pop { animation: cartPop 0.4s ease; }
+
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   LOADING SYSTEM — skeletons, progress bar, spinners, image placeholders
+   ═════════════════════════════════════════════════════════════════════ */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0
+}
+
+/* ── Shimmer block ─────────────────────────────────────────────── */
+.sk {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: var(--g1);
+    border-radius: 6px;
+    flex-shrink: 0
+}
+
+.sk::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, .72) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    animation: skShimmer 1.35s ease-in-out infinite
+}
+
+@keyframes skShimmer {
+    100% {
+        transform: translateX(100%)
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sk::after {
+        animation: none
+    }
+    .sk {
+        animation: skPulse 1.6s ease-in-out infinite
+    }
+    @keyframes skPulse {
+        0%, 100% { opacity: 1 }
+        50%      { opacity: .55 }
+    }
+}
+
+.sk-lines {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem
+}
+
+/* ── Product card skeleton — mirrors .pc ───────────────────────── */
+.sk-card {
+    background: #fff;
+    border: 1px solid var(--g2);
+    border-radius: var(--rx);
+    overflow: hidden
+}
+
+.sk-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0
+}
+
+.sk-card-b {
+    padding: 1.1rem 1.15rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem
+}
+
+.sk-card-ft {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .45rem
+}
+
+.sk-card-btns {
+    display: flex;
+    gap: 6px
+}
+
+/* ── Category strip skeleton — mirrors .cat-card ───────────────── */
+.sk-catstrip {
+    display: flex;
+    gap: 20px;
+    padding: 0 clamp(1rem, 3vw, 2.5rem);
+    overflow: hidden
+}
+
+.sk-catcard {
+    flex: 0 0 200px;
+    width: 200px;
+    background: #fff;
+    border: 1px solid var(--g2);
+    border-radius: var(--rl);
+    overflow: hidden
+}
+
+.sk-catcard-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0
+}
+
+.sk-catcard-b {
+    padding: .9rem 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center
+}
+
+/* ── Sidebar skeleton ──────────────────────────────────────────── */
+.sk-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem
+}
+
+.sk-side-list {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem
+}
+
+.sk-side-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .2rem .1rem
+}
+
+/* ── Category browse-card skeleton ─────────────────────────────── */
+.sk-cbz {
+    background: #fff;
+    border: 1px solid var(--g2);
+    border-radius: var(--rx);
+    overflow: hidden
+}
+
+.sk-cbz-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 0
+}
+
+.sk-cbz-b {
+    padding: 1.35rem 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .7rem
+}
+
+.sk-cbz-chips {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-top: .35rem
+}
+
+.sk-hero {
+    width: 100%
+}
+
+/* ── Hero skeleton ─────────────────────────────────────────────── */
+.hero-sk {
+    background: var(--g1);
+    display: flex;
+    align-items: center
+}
+
+.hero-sk-in {
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 5rem);
+    display: flex;
+    flex-direction: column;
+    gap: .9rem
+}
+
+.hero-sk-in .sk {
+    background: rgba(255, 255, 255, .55)
+}
+
+/* ── Route progress bar ────────────────────────────────────────── */
+.rprog {
+    position: fixed;
+    top: calc(var(--nav) + var(--topbar));
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 1400;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease
+}
+
+.rprog.on {
+    opacity: 1
+}
+
+.rprog-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--pr), var(--se));
+    box-shadow: 0 0 10px rgba(0, 173, 238, .55);
+    transition: width .35s cubic-bezier(.4, 0, .2, 1)
+}
+
+@media(max-width:1024px) {
+    .rprog {
+        top: calc(64px + var(--topbar))
+    }
+}
+
+/* ── Inline spinner ────────────────────────────────────────────── */
+.lspin-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .85rem;
+    padding: 2rem 1rem
+}
+
+.lspin-wrap.block {
+    min-height: 46vh
+}
+
+.lspin {
+    display: block;
+    border-style: solid;
+    border-color: var(--g2);
+    border-top-color: var(--pr);
+    border-radius: 50%;
+    animation: lspin 0.85s linear infinite
+}
+
+@keyframes lspin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.lspin-label {
+    font-size: .78rem;
+    letter-spacing: .06em;
+    color: var(--g3)
+}
+
+.ldr-note {
+    margin-top: .35rem;
+    font-size: .7rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .45)
+}
+
+.page-fallback {
+    min-height: 60vh
+}
+
+/* ── SmartImage: reserves space, shimmers, fades in ────────────── */
+.simg {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--g1)
+}
+
+.simg-loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, .65) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: translateX(-100%);
+    animation: skShimmer 1.35s ease-in-out infinite;
+    z-index: 1
+}
+
+.simg-el {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity .45s ease
+}
+
+.simg-el.is-ready {
+    opacity: 1
+}
+
+.simg-fallback {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 42%, var(--g2) 0 22%, transparent 23%),
+        var(--g1)
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   SHOP BY CATEGORY — browse page, sidebar tree, breadcrumb, sub-cat bar
+   ═════════════════════════════════════════════════════════════════════ */
+
+.cbz-hero {
+    background: linear-gradient(135deg, var(--bl) 0%, #14202b 55%, #0d2b3a 100%);
+    padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+    color: #fff;
+    position: relative;
+    overflow: hidden
+}
+
+.cbz-hero::after {
+    content: '';
+    position: absolute;
+    right: -8%;
+    top: -40%;
+    width: 46%;
+    height: 180%;
+    background: radial-gradient(circle, rgba(0, 173, 238, .22) 0%, transparent 62%);
+    pointer-events: none
+}
+
+.cbz-hero-in {
+    max-width: 1440px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1
+}
+
+.cbz-ey {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .34rem .85rem;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 999px;
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--se)
+}
+
+.cbz-hero h1 {
+    margin-top: 1rem;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+    line-height: 1.1
+}
+
+.cbz-hero h1 em {
+    font-style: italic;
+    color: var(--pr)
+}
+
+.cbz-hero p {
+    margin-top: .85rem;
+    max-width: 560px;
+    font-size: .92rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, .68)
+}
+
+.cbz-search {
+    margin-top: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    max-width: 440px;
+    padding: .8rem 1.1rem;
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 999px;
+    transition: border-color .2s, background .2s
+}
+
+.cbz-search:focus-within {
+    border-color: var(--pr);
+    background: rgba(255, 255, 255, .11)
+}
+
+.cbz-search svg {
+    color: rgba(255, 255, 255, .5);
+    flex-shrink: 0
+}
+
+.cbz-search input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: .88rem
+}
+
+.cbz-search input::placeholder {
+    color: rgba(255, 255, 255, .4)
+}
+
+.cbz-stats {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .55)
+}
+
+.cbz-stats strong {
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-right: .3rem
+}
+
+.cbz-sec {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem)
+}
+
+.cbz-all {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.35rem 1.75rem;
+    margin-bottom: 2rem;
+    background: var(--ow);
+    border: 1px solid var(--g2);
+    border-radius: var(--rx);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .25s, transform .25s, box-shadow .25s
+}
+
+.cbz-all:hover {
+    border-color: var(--pr);
+    transform: translateY(-2px);
+    box-shadow: var(--sh)
+}
+
+.cbz-all-ey {
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--pr)
+}
+
+.cbz-all-tit {
+    margin-top: .3rem;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    font-size: 1.5rem;
+    color: var(--bl)
+}
+
+.cbz-all-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--g4);
+    white-space: nowrap
+}
+
+.cbz-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+    gap: clamp(1.25rem, 2.5vw, 2rem)
+}
+
+.cbz-card {
+    background: #fff;
+    border: 1px solid var(--g2);
+    border-radius: var(--rx);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1), box-shadow .3s, border-color .3s
+}
+
+.cbz-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shm);
+    border-color: transparent
+}
+
+.cbz-card-img {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: var(--g1);
+    cursor: pointer;
+    overflow: hidden
+}
+
+.cbz-card-img .simg {
+    transition: transform .55s cubic-bezier(.4, 0, .2, 1)
+}
+
+.cbz-card:hover .cbz-card-img .simg {
+    transform: scale(1.06)
+}
+
+.cbz-card-count {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    min-width: 34px;
+    padding: .3rem .6rem;
+    border-radius: 999px;
+    background: rgba(8, 8, 8, .72);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    text-align: center
+}
+
+.cbz-card-b {
+    padding: 1.3rem 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    flex: 1
+}
+
+.cbz-card-tit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--bl);
+    transition: color .2s
+}
+
+.cbz-card-tit svg {
+    color: var(--g3);
+    transition: transform .25s, color .2s;
+    flex-shrink: 0
+}
+
+.cbz-card-tit:hover {
+    color: var(--pr)
+}
+
+.cbz-card-tit:hover svg {
+    transform: translateX(3px);
+    color: var(--pr)
+}
+
+.cbz-card-desc {
+    font-size: .82rem;
+    line-height: 1.6;
+    color: var(--g4);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden
+}
+
+.cbz-card-sublabel {
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--pr)
+}
+
+.cbz-card-sublabel.muted {
+    color: var(--g3)
+}
+
+.cbz-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem
+}
+
+.cbz-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .38rem .8rem;
+    border-radius: 999px;
+    border: 1px solid var(--g2);
+    background: var(--ow);
+    color: var(--g4);
+    font-size: .76rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s
+}
+
+.cbz-chip span {
+    font-size: .64rem;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    color: var(--g3)
+}
+
+.cbz-chip:hover {
+    background: var(--pr);
+    border-color: var(--pr);
+    color: #fff
+}
+
+.cbz-chip:hover span {
+    color: rgba(255, 255, 255, .78)
+}
+
+.cbz-chip-more {
+    border-style: dashed;
+    color: var(--pr)
+}
+
+.cbz-card-cta {
+    margin-top: auto;
+    padding-top: .9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--bl);
+    transition: color .2s, gap .2s
+}
+
+.cbz-card-cta:hover {
+    color: var(--pr);
+    gap: .85rem
+}
+
+.cbz-empty,
+.shop-empty {
+    text-align: center;
+    padding: clamp(3rem, 8vw, 5rem) 1rem;
+    color: var(--g3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem
+}
+
+.cbz-empty h3,
+.shop-empty h3 {
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--bl)
+}
+
+.cbz-empty p,
+.shop-empty p {
+    font-size: .88rem;
+    max-width: 420px
+}
+
+.cbz-empty .btn,
+.shop-empty .btn {
+    margin-top: 1rem
+}
+
+/* ── Breadcrumb ────────────────────────────────────────────────── */
+.shop-crumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: 1.25rem clamp(1rem, 3vw, 2.5rem) 0;
+    font-size: .78rem;
+    color: var(--g3)
+}
+
+.shop-crumb button {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: none;
+    border: none;
+    padding: .2rem;
+    cursor: pointer;
+    color: var(--g4);
+    font-size: .78rem;
+    transition: color .2s
+}
+
+.shop-crumb button:hover {
+    color: var(--pr)
+}
+
+.shop-crumb button.crumb-on {
+    color: var(--bl);
+    font-weight: 600;
+    cursor: default
+}
+
+.shop-crumb svg {
+    color: var(--g3);
+    flex-shrink: 0
+}
+
+/* ── Sub-category quick bar ────────────────────────────────────── */
+.subcat-bar {
+    display: flex;
+    gap: .55rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 1rem clamp(1rem, 3vw, 2.5rem) .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--g2) transparent
+}
+
+.subcat-bar::-webkit-scrollbar {
+    height: 4px
+}
+
+.subcat-bar::-webkit-scrollbar-thumb {
+    background: var(--g2);
+    border-radius: 4px
+}
+
+.subcat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    flex-shrink: 0;
+    padding: .5rem 1.05rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--g2);
+    background: #fff;
+    color: var(--g4);
+    font-size: .8rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .2s
+}
+
+.subcat-pill span {
+    font-size: .66rem;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    color: var(--g3)
+}
+
+.subcat-pill:hover {
+    border-color: var(--pr);
+    color: var(--pr)
+}
+
+.subcat-pill.on {
+    background: var(--pr);
+    border-color: var(--pr);
+    color: #fff
+}
+
+.subcat-pill.on span {
+    color: rgba(255, 255, 255, .8)
+}
+
+/* Active search term — clicking the chip drops the term. */
+.shop-search-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem
+}
+
+.shop-search-note {
+    font-size: .75rem;
+    color: var(--g4);
+    align-self: center;
+    white-space: nowrap
+}
+
+/* ── Sidebar category tree ─────────────────────────────────────── */
+.sb-node {
+    display: flex;
+    flex-direction: column
+}
+
+.sb-cat {
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    gap: .2rem;
+    background: none
+}
+
+.sb-cat:hover {
+    background: none
+}
+
+.sb-cat-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem;
+    padding: .58rem .85rem;
+    border: none;
+    background: none;
+    border-radius: var(--r);
+    font-size: .83rem;
+    font-weight: 500;
+    color: var(--g4);
+    cursor: pointer;
+    text-align: left;
+    transition: all .2s
+}
+
+.sb-cat-nm {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.sb-cat-ct {
+    font-size: .66rem;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    color: var(--g3);
+    flex-shrink: 0
+}
+
+.sb-cat-main:hover {
+    background: var(--pr-l);
+    color: var(--pr)
+}
+
+.sb-cat.on > .sb-cat-main {
+    background: var(--pr-l);
+    color: var(--pr);
+    font-weight: 600
+}
+
+.sb-cat.on > .sb-cat-main .sb-cat-ct {
+    color: var(--pr)
+}
+
+.sb-cat-tog {
+    flex-shrink: 0;
+    width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: var(--r);
+    color: var(--g3);
+    cursor: pointer;
+    transition: background .2s, color .2s
+}
+
+.sb-cat-tog svg {
+    transition: transform .25s cubic-bezier(.4, 0, .2, 1)
+}
+
+.sb-cat-tog:hover {
+    background: var(--g1);
+    color: var(--pr)
+}
+
+.sb-cat-tog.open svg {
+    transform: rotate(90deg)
+}
+
+.sb-branch {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-left: .9rem;
+    padding-left: .55rem;
+    border-left: 1px solid var(--g2);
+    transition: grid-template-rows .3s cubic-bezier(.4, 0, .2, 1)
+}
+
+.sb-branch.open {
+    grid-template-rows: 1fr
+}
+
+.sb-branch > * {
+    overflow: hidden;
+    min-height: 0
+}
+
+.sb-branch .sb-cat-main {
+    font-size: .79rem;
+    padding: .46rem .7rem
+}
+
+/* ── Sidebar sort list ─────────────────────────────────────────── */
+.sb-sorts {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem
+}
+
+.sb-sort {
+    padding: .5rem .85rem;
+    border: none;
+    background: none;
+    border-radius: var(--r);
+    font-size: .81rem;
+    color: var(--g4);
+    text-align: left;
+    cursor: pointer;
+    transition: all .2s
+}
+
+.sb-sort:hover {
+    background: var(--g1);
+    color: var(--pr)
+}
+
+.sb-sort.on {
+    background: var(--pr-l);
+    color: var(--pr);
+    font-weight: 600
+}
+
+/* ── Category strip: sub-category flyout ───────────────────────── */
+.cat-card {
+    position: relative
+}
+
+.cc-subs {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 30;
+    margin-top: 6px;
+    padding: .5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .12rem;
+    background: #fff;
+    border: 1px solid var(--g2);
+    border-radius: var(--rl);
+    box-shadow: var(--shm);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s
+}
+
+.cat-card.peeking .cc-subs {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0)
+}
+
+.cc-sub {
+    padding: .45rem .7rem;
+    border: none;
+    background: none;
+    border-radius: var(--r);
+    font-size: .78rem;
+    color: var(--g4);
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all .18s
+}
+
+.cc-sub:hover {
+    background: var(--pr-l);
+    color: var(--pr)
+}
+
+.cc-sub-more {
+    color: var(--pr);
+    font-weight: 600;
+    font-size: .72rem
+}
+
+@media(hover:none) {
+    .cc-subs {
+        display: none
+    }
+}
+
+/* ── Home catalogue tabs: counts + sub-category variant ────────── */
+.sc-tab-ct {
+    margin-left: .35rem;
+    font-size: .64rem;
+    font-family: var(--font, 'Montserrat'), sans-serif;
+    opacity: .6
+}
+
+.sc-tab-sub {
+    font-size: .72rem;
+    padding: .34rem .8rem;
+    border-style: dashed;
+    color: var(--g3)
+}
+
+.sc-tab-sub.on {
+    border-style: solid
+}
+
+/* ── Mobile tuning for the new browse surfaces ─────────────────── */
+@media(max-width: 640px) {
+    .cbz-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem
+    }
+
+    .cbz-all {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .85rem;
+        padding: 1.15rem 1.25rem
+    }
+
+    .cbz-stats {
+        gap: 1.15rem;
+        font-size: .72rem
+    }
+
+    .shop-crumb {
+        font-size: .72rem
+    }
+
+    .shop-crumb button {
+        font-size: .72rem
+    }
+
+    .sk-catcard {
+        flex: 0 0 150px;
+        width: 150px
+    }
+}
+
+/* The legacy `.sb-cat span` rule styled the count badge back when the row was
+   "name + <span>count</span>". The tree rows wrap the name in a span too, so
+   both halves need their sizing restated at a higher specificity. */
+.sb-cat .sb-cat-nm {
+    font-size: .83rem;
+    color: inherit
+}
+
+.sb-branch .sb-cat .sb-cat-nm {
+    font-size: .79rem
+}
+
+.sb-cat .sb-cat-ct {
+    font-size: .66rem;
+    color: var(--g3)
+}
+
+.sb-cat.on > .sb-cat-main .sb-cat-ct {
+    color: var(--pr)
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   ANNOUNCEMENT BAR MARKERS
+   Eight glyphs drawn entirely in CSS — no icon font, no SVG, no images.
+   Each keeps the same 9px optical box so the marquee rhythm stays even
+   however the admin mixes them.
+   ═════════════════════════════════════════════════════════════════════ */
+
+.mqbar {
+    opacity: 0;
+    transition: opacity .5s ease
+}
+
+.mqbar.is-ready {
+    opacity: 1
+}
+
+.mqi {
+    /* `currentColor` on the marker inherits from here unless an accent wins */
+    color: rgba(255, 255, 255, .55)
+}
+
+.mqm {
+    --mk: var(--se);
+    display: inline-block;
+    position: relative;
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    font-style: normal;
+    transform-origin: center
+}
+
+.mqm.acc-gold  { --mk: var(--se) }
+.mqm.acc-blue  { --mk: var(--pr) }
+.mqm.acc-white { --mk: rgba(255, 255, 255, .78) }
+
+/* ── SPARKLE — four-point star, slowly turning ─────────────────── */
+.mqm-sparkle {
+    background: var(--mk);
+    clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%,
+            50% 100%, 40% 60%, 0% 50%, 40% 40%);
+    animation: mkSpin 6s linear infinite
+}
+
+/* ── DIAMOND — square on its point, breathing ──────────────────── */
+.mqm-diamond {
+    width: 7px;
+    height: 7px;
+    background: var(--mk);
+    transform: rotate(45deg);
+    animation: mkPulseRot 2.8s ease-in-out infinite
+}
+
+/* ── DOT — filled circle with a soft halo ──────────────────────── */
+.mqm-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mk);
+    box-shadow: 0 0 0 0 var(--mk);
+    animation: mkHalo 2.4s ease-out infinite
+}
+
+/* ── RING — hollow circle that widens on the beat ──────────────── */
+.mqm-ring {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--mk);
+    animation: mkBreathe 3s ease-in-out infinite
+}
+
+/* ── SQUARE — tiny outlined block, gently rocking ──────────────── */
+.mqm-square {
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid var(--mk);
+    border-radius: 1px;
+    animation: mkRock 4s ease-in-out infinite
+}
+
+/* ── BAR — short rule that stretches in and out ────────────────── */
+.mqm-bar {
+    width: 12px;
+    height: 1.5px;
+    background: var(--mk);
+    border-radius: 2px;
+    animation: mkStretch 2.6s ease-in-out infinite
+}
+
+/* ── PLUS — crosshair built from two pseudo-elements ───────────── */
+.mqm-plus::before,
+.mqm-plus::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    background: var(--mk);
+    border-radius: 1px
+}
+
+.mqm-plus::before {
+    width: 9px;
+    height: 1.5px
+}
+
+.mqm-plus::after {
+    width: 1.5px;
+    height: 9px
+}
+
+.mqm-plus {
+    animation: mkSpinQuarter 5s ease-in-out infinite
+}
+
+/* ── SLASH — leaning stroke, a typographic separator ───────────── */
+.mqm-slash {
+    width: 2px;
+    height: 10px;
+    background: var(--mk);
+    border-radius: 2px;
+    transform: skewX(-20deg);
+    animation: mkLean 3.4s ease-in-out infinite
+}
+
+/* ── Keyframes ─────────────────────────────────────────────────── */
+@keyframes mkSpin {
+    to { transform: rotate(360deg) }
+}
+
+@keyframes mkSpinQuarter {
+    0%, 100% { transform: rotate(0deg) }
+    50%      { transform: rotate(90deg) }
+}
+
+@keyframes mkPulseRot {
+    0%, 100% { transform: rotate(45deg) scale(1) }
+    50%      { transform: rotate(45deg) scale(1.35) }
+}
+
+@keyframes mkHalo {
+    0%   { box-shadow: 0 0 0 0 var(--mk); opacity: 1 }
+    70%  { box-shadow: 0 0 0 5px transparent; opacity: .75 }
+    100% { box-shadow: 0 0 0 0 transparent; opacity: 1 }
+}
+
+@keyframes mkBreathe {
+    0%, 100% { transform: scale(1);   opacity: .8 }
+    50%      { transform: scale(1.3); opacity: 1 }
+}
+
+@keyframes mkRock {
+    0%, 100% { transform: rotate(0deg) }
+    25%      { transform: rotate(12deg) }
+    75%      { transform: rotate(-12deg) }
+}
+
+@keyframes mkStretch {
+    0%, 100% { transform: scaleX(1);   opacity: .7 }
+    50%      { transform: scaleX(1.6); opacity: 1 }
+}
+
+@keyframes mkLean {
+    0%, 100% { transform: skewX(-20deg) }
+    50%      { transform: skewX(20deg) }
+}
+
+/* Motion is decoration here — drop it when the visitor asked us to. */
+@media (prefers-reduced-motion: reduce) {
+    .mqm,
+    .mqm-plus {
+        animation: none !important
+    }
+    .mqwrap {
+        animation: none !important
+    }
+}

@@ -4,36 +4,36 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const Contact: React.FC = () => {
   useScrollReveal();
-  
+
   return (
     <div className="page on">
       <div className="ct-hero">
-        <div className="ct-ey">Get In Touch</div>
-        <h1>We'd Love to <em>Hear</em><br />From You</h1>
-        <p>Questions, collaborations, or just want to say hello — our team is always ready.</p>
+        <div className="ct-ey">Nous contacter</div>
+        <h1>Nous serions ravis de<br /><em>vous</em> lire</h1>
+        <p>Questions, collaborations, ou simplement envie de dire bonjour — notre équipe est toujours disponible.</p>
       </div>
 
       <div className="ct-grid">
         <div className="ct-info">
           <h2>
-            Let's Start a<br /><em>Conversation</em>
+            Démarrons la<br /><em>conversation</em>
           </h2>
           <p>
-            Whether you have a question about products, shipping, or anything else — our dedicated team is here to make your experience exceptional.
+            Que votre question porte sur un produit, une livraison ou tout autre sujet — notre équipe dédiée est là pour rendre votre expérience exceptionnelle.
           </p>
           <div className="ct-its">
             <div className="ct-it rv">
               <div className="ct-ic"><Phone size={19} /></div>
               <div>
-                <h4>Phone</h4>
-                <p>+1 (800) 555-LUMIERE<br />Mon–Fri, 9am–6pm EST</p>
+                <h4>Téléphone</h4>
+                <p>+216 20 123 456<br />Lun–Ven, 9h–18h</p>
               </div>
             </div>
             <div className="ct-it rv d1">
               <div className="ct-ic"><Mail size={19} /></div>
               <div>
-                <h4>Email</h4>
-                <p>hello@lumiere.store<br />Reply within 2 business hours</p>
+                <h4>E-mail</h4>
+                <p>contact@royallumiere.tn<br />Réponse sous 2 heures ouvrées</p>
               </div>
             </div>
             <div className="ct-it rv d2">
@@ -46,36 +46,36 @@ const Contact: React.FC = () => {
             <div className="ct-it rv d3">
               <div className="ct-ic"><MessageSquare size={19} /></div>
               <div>
-                <h4>Live Chat</h4>
-                <p>Available 24/7 — avg. 3 min response</p>
+                <h4>Chat en direct</h4>
+                <p>Disponible 24h/24 et 7j/7 — réponse en 3 min en moyenne</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="ct-form rv">
-          <h3>Send Us a Message</h3>
+          <h3>Envoyez-nous un message</h3>
           <div className="frow">
-            <div className="fg"><label>First Name</label><input type="text" placeholder="Élise" /></div>
-            <div className="fg"><label>Last Name</label><input type="text" placeholder="Fontaine" /></div>
+            <div className="fg"><label>Prénom</label><input type="text" placeholder="Élise" /></div>
+            <div className="fg"><label>Nom</label><input type="text" placeholder="Fontaine" /></div>
           </div>
-          <div className="fg"><label>Email Address</label><input type="email" placeholder="hello@example.com" /></div>
+          <div className="fg"><label>Adresse e-mail</label><input type="email" placeholder="exemple@email.com" /></div>
           <div className="fg">
-            <label>Subject</label>
+            <label>Sujet</label>
             <select>
-              <option>General Inquiry</option>
-              <option>Order Support</option>
-              <option>Returns & Refunds</option>
-              <option>Partnerships</option>
-              <option>Press</option>
+              <option>Demande générale</option>
+              <option>Suivi de commande</option>
+              <option>Retours et remboursements</option>
+              <option>Partenariats</option>
+              <option>Presse</option>
             </select>
           </div>
           <div className="fg">
             <label>Message</label>
-            <textarea placeholder="Tell us how we can help you today…"></textarea>
+            <textarea placeholder="Dites-nous comment nous pouvons vous aider…"></textarea>
           </div>
           <button className="btn btn-pr" style={{ width: '100%', justifyContent: 'center', padding: '.95rem' }}>
-            Send Message <Send size={16} style={{ marginLeft: 8 }} />
+            Envoyer le message <Send size={16} style={{ marginLeft: 8 }} />
           </button>
         </div>
       </div>

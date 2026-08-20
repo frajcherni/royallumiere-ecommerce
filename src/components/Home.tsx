@@ -3,8 +3,14 @@ import Hero from './Hero';
 import ProductCard from './ProductCard';
 import { Truck, RefreshCcw, Shield, Phone, Sparkles, Tag, Zap, Award, Mail, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import { fetchWebsiteArticles, fetchWebsiteCategories, fetchCarouselSlides, Article, Category, CarouselSlide } from '../api';
+import { fetchCarouselSlides, fetchPromos, Article, CarouselSlide, Promo, getImageUrl } from '../api';
+import { useCart } from '../context/CartContext';
+import { useCatalog } from '../context/CatalogContext';
+
 import Categorystrip from './Categorystrip';
+import Brands from './Brands';
+import Testimonials from './Testimonials';
+import { SkeletonProductGrid, Skeleton } from './Skeleton';
 
 interface HomeProps {
   onNavigate: (id: string, props?: any) => void;
@@ -12,32 +18,32 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   useScrollReveal();
+  const { addToCart, openCart } = useCart();
 
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  // Articles + categories come from the shared catalogue (fetched once for the
+  // whole app); only the home-specific content is loaded here.
+  const { articles, tree, loading, countInCategory, articlesInCategory } = useCatalog();
+
   const [slides, setSlides] = useState<CarouselSlide[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [promos, setPromos] = useState<Promo[]>([]);
+  const [heroLoading, setHeroLoading] = useState(true);
   const [showAllCatalogue, setShowAllCatalogue] = useState(false);
-  const [catalogueFilter, setCatalogueFilter] = useState('all');
+  const [catalogueFilter, setCatalogueFilter] = useState<string | number>('all');
   const [visibleCatalogueCount, setVisibleCatalogueCount] = useState(8);
-
-  const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [articlesData, categoriesData, slidesData] = await Promise.all([
-          fetchWebsiteArticles(),
-          fetchWebsiteCategories(),
-          fetchCarouselSlides()
+        const [slidesData, promosData] = await Promise.all([
+          fetchCarouselSlides().catch(() => []),
+          fetchPromos().catch(() => []),
         ]);
-        setArticles(articlesData);
-        setCategories(categoriesData);
         setSlides(slidesData);
+        setPromos(promosData);
       } catch (error) {
-        console.error("Error loading home data:", error);
+        console.error('Error loading home data:', error);
       } finally {
-        setLoading(false);
+        setHeroLoading(false);
       }
     };
     loadData();
@@ -47,19 +53,34 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const novelties = articles.filter(a => a.is_new_arrival).slice(0, 5);
   // Filter for best sellers
   const bestSellers = articles.filter(a => a.is_top_seller);
+  // Catalogue tab respects sub-categories: picking a parent shows its children too.
+  const catalogueItems = articlesInCategory(catalogueFilter);
 
-  // Countdown Logic
-  const [timeLeft, setTimeLeft] = useState(8 * 3600 + 34 * 60 + 22);
+  // Featured promo for the offer banner
+  const featuredPromo = promos[0] || null;
+
+  // Countdown Logic — based on the featured promo's end date
+  const [timeLeft, setTimeLeft] = useState(0);
   useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(prev => prev <= 0 ? 8 * 3600 : prev - 1), 1000);
+    if (!featuredPromo?.date_end) { setTimeLeft(0); return; }
+    const end = new Date(featuredPromo.date_end).getTime();
+    const tick = () => setTimeLeft(Math.max(0, Math.floor((end - Date.now()) / 1000)));
+    tick();
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [featuredPromo?.id, featuredPromo?.date_end]);
 
   const formatTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
+    const d = Math.floor(seconds / 86400);
+    const h = Math.floor((seconds % 86400) / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return { h: String(h).padStart(2, '0'), m: String(m).padStart(2, '0'), s: String(s).padStart(2, '0') };
+    return {
+      d: String(d).padStart(2, '0'),
+      h: String(h).padStart(2, '0'),
+      m: String(m).padStart(2, '0'),
+      s: String(s).padStart(2, '0'),
+    };
   };
   const cd = formatTime(timeLeft);
 
@@ -72,12 +93,6 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
     }
   };
 
-  const getImageUrl = (imagePath: string | null | undefined) => {
-    if (!imagePath) return "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80&fit=crop";
-    if (imagePath.startsWith('http')) return imagePath;
-    return `${IMAGE_URL}/${imagePath.replace(/\\/g, '/')}`;
-  };
-
   // Helper to pick the best image for an article
   const getArticleImage = (item: Article) => {
     if (item.image) return getImageUrl(item.image);
@@ -87,76 +102,66 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
     return getImageUrl(null);
   };
 
+
   return (
     <div className="page on">
-      <Hero onNavigate={onNavigate} slides={slides} />
-
-      {/* MARQUEE */}
-      <div className="mqbar">
-        <div className="mqwrap">
-          {[...Array(2)].map((_, i) => (
-            <React.Fragment key={i}>
-              <span className="mqi"><Truck size={11} color="var(--se)" /> Free Shipping Over $50</span>
-              <span className="mqi"><Sparkles size={11} color="var(--se)" /> New Arrivals Weekly</span>
-              <span className="mqi"><RefreshCcw size={11} color="var(--se)" /> 30-Day Free Returns</span>
-              <span className="mqi"><Shield size={11} color="var(--se)" /> Premium Quality Guaranteed</span>
-              <span className="mqi"><Sparkles size={11} color="var(--se)" /> Exclusive Member Rewards</span>
-              <span className="mqi"><Phone size={11} color="var(--se)" /> 24/7 Customer Support</span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+      <Hero onNavigate={onNavigate} slides={slides} loading={heroLoading} />
 
       {/*  <div className="fstrip">
         <div className="finner">
           <div className="fi rv">
             <div className="fi-ic"><Truck size={20} /></div>
             <div>
-              <h4>Free Delivery</h4>
-              <p>On all orders above $50</p>
+              <h4>Livraison gratuite</h4>
+              <p>Dès 50 DT d’achat</p>
             </div>
           </div>
           <div className="fi rv d1">
             <div className="fi-ic"><RefreshCcw size={20} /></div>
             <div>
-              <h4>Easy Returns</h4>
-              <p>30-day hassle-free policy</p>
+              <h4>Retours faciles</h4>
+              <p>30 jours, sans complication</p>
             </div>
           </div>
           <div className="fi rv d2">
             <div className="fi-ic"><Shield size={20} /></div>
             <div>
-              <h4>Secure Payment</h4>
-              <p>100% protected checkout</p>
+              <h4>Paiement sécurisé</h4>
+              <p>Commande protégée à 100 %</p>
             </div>
           </div>
           <div className="fi rv d3">
             <div className="fi-ic"><Phone size={20} /></div>
             <div>
-              <h4>24/7 Support</h4>
-              <p>Always here for you</p>
+              <h4>Support 24h/24</h4>
+              <p>Toujours à votre écoute</p>
             </div>
           </div>
         </div>
       </div> */}
      
 
-      {/* NOVELTIES */}
+      {/* NOVELTIES — "Latest Drops / What's New" band.
+          Hidden on request; the markup is kept intact so it can be switched
+          back on by removing the comment wrapper below.
+          The same `novelties` data still drives the "New Arrivals" split
+          section further down, so nothing else is affected. */}
+      {/*
       {novelties.length > 0 && (
         <section className="sec">
           <div className="shd rv">
-            <div className="stag"><Sparkles size={11} /> Latest Drops</div>
-            <h2 className="stit">What's <em>New</em></h2>
-            <p className="ssub">Fresh arrivals curated with exquisite taste — be the first to own something extraordinary.</p>
+            <div className="stag"><Sparkles size={11} /> Dernières nouveautés</div>
+            <h2 className="stit">Quoi de <em>neuf</em></h2>
+            <p className="ssub">Des arrivages choisis avec un goût exquis — soyez les premiers à posséder l’exceptionnel.</p>
           </div>
           <div className="nov-g">
             {novelties[0] && (
               <div className="nf rv" onClick={() => onNavigate('detail', { article: novelties[0] })}>
                 <img src={getArticleImage(novelties[0])} alt={novelties[0].nom} />
                 <div className="nf-ol"></div>
-                <span className="pbadge pb-n" style={{ position: 'absolute', top: 14, left: 14 }}>NEW IN</span>
+                <span className="pbadge pb-n" style={{ position: 'absolute', top: 14, left: 14 }}>NOUVEAU</span>
                 <div className="nf-b">
-                  <div className="nf-tag">★ Editor's Pick</div>
+                  <div className="nf-tag">★ Coup de cœur</div>
                   <div className="nf-tit">{novelties[0].designation}</div>
                   <div className="nf-pr">${Number(novelties[0].puv_ttc).toFixed(2)}</div>
                 </div>
@@ -166,7 +171,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <div key={item.id} className={`ns rv d${(idx % 2) + 1}`} onClick={() => onNavigate('detail', { article: item })}>
                 <img src={getArticleImage(item)} alt={item.nom} />
                 <div className="ns-ol"></div>
-                <span className="pbadge pb-n" style={{ position: 'absolute', top: 12, left: 12 }}>NEW</span>
+                <span className="pbadge pb-n" style={{ position: 'absolute', top: 12, left: 12 }}>NOUVEAU</span>
                 <div className="ns-b">
                   <div className="ns-nm">{item.designation}</div>
                   <div className="ns-pr">${Number(item.puv_ttc).toFixed(2)}</div>
@@ -176,44 +181,83 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           </div>
         </section>
       )}
+      */}
 
       {/* SHOP BY CATEGORY */}
 
-<Categorystrip categories={categories} onNavigate={onNavigate} getImageUrl={getImageUrl} />
-      {/* OFFER BANNER */}
-      <div className="ofb-wrap">
-        <div className="ofb rv">
-          <div className="ofb-l">
-            <div className="ofb-ey"><Zap size={13} fill="var(--se)" color="var(--se)" /> Flash Sale — Ends in</div>
-            <div className="ofb-tit">Summer Mega Sale<br />Up to 60% Off</div>
-            <div className="ofb-sub">Exclusive discounts on our most-coveted premium items. Don't miss these limited-time prices.</div>
-            <div className="cdown">
-              <div className="cdu"><div className="cdn">{cd.h}</div><div className="cdl">Hours</div></div>
-              <span className="cds">:</span>
-              <div className="cdu"><div className="cdn">{cd.m}</div><div className="cdl">Mins</div></div>
-              <span className="cds">:</span>
-              <div className="cdu"><div className="cdn">{cd.s}</div><div className="cdl">Secs</div></div>
+      <Categorystrip
+        categories={tree}
+        loading={loading}
+        onNavigate={onNavigate}
+        getImageUrl={getImageUrl}
+        countInCategory={countInCategory}
+      />
+
+      {/* OFFER BANNER — driven by the featured promo */}
+      {featuredPromo && (
+        <div className="ofb-wrap">
+          <div className="ofb rv">
+            <div className="ofb-l">
+              <div className="ofb-ey">
+                <Zap size={13} fill="var(--se)" color="var(--se)" />
+                {featuredPromo.date_end && timeLeft > 0 ? 'Promotion — Se termine dans' : 'Promotion'}
+              </div>
+              <div className="ofb-tit">{featuredPromo.title}</div>
+              {featuredPromo.description && (
+                <div className="ofb-sub">{featuredPromo.description}</div>
+              )}
+              {featuredPromo.date_end && timeLeft > 0 && (
+                <div className="cdown">
+                  {Number(cd.d) > 0 && (
+                    <>
+                      <div className="cdu"><div className="cdn">{cd.d}</div><div className="cdl">Jours</div></div>
+                      <span className="cds">:</span>
+                    </>
+                  )}
+                  <div className="cdu"><div className="cdn">{cd.h}</div><div className="cdl">Heures</div></div>
+                  <span className="cds">:</span>
+                  <div className="cdu"><div className="cdn">{cd.m}</div><div className="cdl">Min</div></div>
+                  <span className="cds">:</span>
+                  <div className="cdu"><div className="cdn">{cd.s}</div><div className="cdl">Sec</div></div>
+                </div>
+              )}
+              <button className="btn btn-wh" onClick={() => onNavigate('detail', { article: featuredPromo.product })}>
+                Voir le produit <ArrowRight size={16} style={{ marginLeft: 8 }} />
+              </button>
             </div>
-            <button className="btn btn-wh" onClick={() => onNavigate('offers')}>Shop the Sale <ArrowRight size={16} style={{ marginLeft: 8 }} /></button>
-          </div>
-          <div className="ofb-r">
-            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=700&q=80&fit=crop" alt="Sale" />
-            <div className="ofb-badge"><span>60</span><small>% OFF</small></div>
+            <div
+              className="ofb-r"
+              style={{ cursor: 'pointer' }}
+              onClick={() => onNavigate('detail', { article: featuredPromo.product })}
+            >
+              <img src={getArticleImage(featuredPromo.product)} alt={featuredPromo.product?.designation || featuredPromo.title} />
+              <div className="ofb-badge"><span>{Number(featuredPromo.product?.puv_ttc).toFixed(0)}</span><small>DT</small></div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* BEST SELLERS */}
-      {bestSellers.length > 0 && (
+      {/* BEST SELLERS — skeleton row first so the section keeps its height */}
+      {loading && (
+        <section className="sec">
+          <div className="shd">
+            <Skeleton h={10} w={110} />
+            <Skeleton h={30} w={220} style={{ marginTop: '.6rem' }} />
+          </div>
+          <SkeletonProductGrid count={4} className="pgrid" />
+        </section>
+      )}
+
+      {!loading && bestSellers.length > 0 && (
         <section className="sec">
           <div className="flex-between shd rv" style={{ marginBottom: 0 }}>
             <div>
-              <div className="stag"><Award size={11} /> Customer Faves</div>
-              <h2 className="stit">Best <em>Sellers</em></h2>
+              <div className="stag"><Award size={11} /> Coups de cœur clients</div>
+              <h2 className="stit">Meilleures <em>ventes</em></h2>
             </div>
-            <button className="btn btn-ol" onClick={() => onNavigate('shop', { filter: 'best' })}>View All <ArrowRight size={16} style={{ marginLeft: 8 }} /></button>
+            <button className="btn btn-ol" onClick={() => onNavigate('shop', { filter: 'best' })}>Voir tout <ArrowRight size={16} style={{ marginLeft: 8 }} /></button>
           </div>
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: '1.5rem' }}>
             <div className="icr-wrap rv">
               <button className="icr-btn lft" onClick={() => scrollCarousel(-1)}><ChevronLeft size={18} /></button>
               <div className="icr-outer">
@@ -225,8 +269,10 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                       name={item.designation}
                       price={String(item.puv_ttc)}
                       img={getArticleImage(item)}
-                      badge={{ text: 'BEST', type: 'best' }}
+                      badge={{ text: 'TOP', type: 'best' }}
                       onDetail={() => onNavigate('detail', { article: item })}
+                      onAddToCart={() => { addToCart(item); openCart(); }}
+                      onCommander={() => { addToCart(item); onNavigate('checkout'); }}
                     />
                   ))}
                 </div>
@@ -237,137 +283,149 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </section>
       )}
 
-      {/* NEW ARRIVALS */}
-      {articles.filter(a => a.is_new_arrival).length > 0 && (
+      {/* NEW ARRIVALS — SPLIT FEATURE LAYOUT */}
+      {novelties.length > 0 && (
         <section className="sec" style={{ paddingTop: 0 }}>
           <div className="shd rv">
-            <div className="stag"><Tag size={11} /> Just Landed</div>
-            <h2 className="stit">New <em>Arrivals</em></h2>
-            <p className="ssub">Be the first to discover our latest additions — fresh, seasonal, and utterly covetable.</p>
+            <div className="stag"><Tag size={11} /> Tout juste arrivés</div>
+            <h2 className="stit">Nouveaux <em>arrivages</em></h2>
+            <p className="ssub">Soyez les premiers à découvrir nos dernières nouveautés — fraîches, de saison et irrésistibles.</p>
           </div>
-          <div className="pgrid">
-            {articles.filter(a => a.is_new_arrival).slice(0, 4).map(item => (
-              <ProductCard
-                key={item.id}
-                category={item.categorie?.nom || "Premium"}
-                name={item.designation}
-                price={String(item.puv_ttc)}
-                img={getArticleImage(item)}
-                badge={{ text: 'NEW', type: 'new' }}
-                onDetail={() => onNavigate('detail', { article: item })}
-              />
-            ))}
+
+          <div className="na-split rv">
+            {/* LEFT: big featured image */}
+            <div
+              className="na-feature"
+              onClick={() => onNavigate('detail', { article: novelties[0] })}
+            >
+              <div className="na-feature-img">
+                <img src={getArticleImage(novelties[0])} alt={novelties[0].designation} />
+              </div>
+              <div className="na-label">
+                <div className="na-name">{novelties[0].designation}</div>
+                <div className="na-price">{Number(novelties[0].puv_ttc).toFixed(3)} DT</div>
+              </div>
+            </div>
+
+            {/* RIGHT: 2x2 grid */}
+            <div className="na-grid">
+              {novelties.slice(1, 5).map(item => (
+                <div
+                  key={item.id}
+                  className="na-cell"
+                  onClick={() => onNavigate('detail', { article: item })}
+                >
+                  <div className="na-cell-img">
+                    <img src={getArticleImage(item)} alt={item.designation} />
+                  </div>
+                  <div className="na-label">
+                    <div className="na-name">{item.designation}</div>
+                    <div className="na-price">{Number(item.puv_ttc).toFixed(3)} DT</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* DYNAMIC CATALOGUE */}
       <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="flex-between shd rv" style={{ marginBottom: '2rem' }}>
+        <div className="flex-between shd rv" style={{ marginBottom: '1rem' }}>
           <div>
-            <div className="stag"><Sparkles size={11} /> All Collections</div>
-            <h2 className="stit">Product <em>Catalogue</em></h2>
+            <div className="stag"><Sparkles size={11} /> Toutes les collections</div>
+            <h2 className="stit">Catalogue <em>produits</em></h2>
           </div>
           {!showAllCatalogue && (
             <button className="btn btn-ol" onClick={() => setShowAllCatalogue(true)}>
-              View All <ArrowRight size={16} style={{ marginLeft: 8 }} />
+              Voir tout <ArrowRight size={16} style={{ marginLeft: 8 }} />
             </button>
           )}
         </div>
 
-        {showAllCatalogue && (
-          <div className="sc-tabs rv" style={{ marginBottom: '2.5rem' }}>
-            <button 
+        {showAllCatalogue && !loading && (
+          <div className="sc-tabs rv" style={{ marginBottom: '1.5rem' }}>
+            <button
               className={`sc-tab ${catalogueFilter === 'all' ? 'on' : ''}`}
-              onClick={() => setCatalogueFilter('all')}
+              onClick={() => { setCatalogueFilter('all'); setVisibleCatalogueCount(8); }}
             >
-              All
+              Tout <span className="sc-tab-ct">{countInCategory('all')}</span>
             </button>
-            {categories.map(cat => (
-              <button 
-                key={cat.id}
-                className={`sc-tab ${catalogueFilter === String(cat.id) ? 'on' : ''}`}
-                onClick={() => setCatalogueFilter(String(cat.id))}
-              >
-                {cat.nom}
-              </button>
+            {/* Root categories, each followed by its sub-categories so a shopper
+                can narrow down without leaving the home page. */}
+            {tree.map(cat => (
+              <React.Fragment key={cat.id}>
+                <button
+                  className={`sc-tab ${String(catalogueFilter) === String(cat.id) ? 'on' : ''}`}
+                  onClick={() => { setCatalogueFilter(cat.id); setVisibleCatalogueCount(8); }}
+                >
+                  {cat.nom} <span className="sc-tab-ct">{countInCategory(cat.id)}</span>
+                </button>
+                {cat.children.map(sub => (
+                  <button
+                    key={sub.id}
+                    className={`sc-tab sc-tab-sub ${String(catalogueFilter) === String(sub.id) ? 'on' : ''}`}
+                    onClick={() => { setCatalogueFilter(sub.id); setVisibleCatalogueCount(8); }}
+                  >
+                    {sub.nom} <span className="sc-tab-ct">{countInCategory(sub.id)}</span>
+                  </button>
+                ))}
+              </React.Fragment>
             ))}
           </div>
         )}
 
-        <div className="pgrid">
-          {articles
-            .filter(a => catalogueFilter === 'all' || String(a.categorie?.id) === catalogueFilter)
-            .slice(0, showAllCatalogue ? visibleCatalogueCount : 4)
-            .map(item => (
-              <ProductCard
-                key={item.id}
-                category={item.categorie?.nom || "Premium"}
-                name={item.designation}
-                price={String(item.puv_ttc)}
-                img={getArticleImage(item)}
-                onDetail={() => onNavigate('detail', { article: item })}
-              />
-            ))}
-        </div>
+        {loading ? (
+          <SkeletonProductGrid count={showAllCatalogue ? 8 : 4} />
+        ) : (
+          <div className="pgrid">
+            {catalogueItems
+              .slice(0, showAllCatalogue ? visibleCatalogueCount : 4)
+              .map(item => (
+                <ProductCard
+                  key={item.id}
+                  category={item.categorie?.nom || "Premium"}
+                  name={item.designation}
+                  price={String(item.puv_ttc)}
+                  img={getArticleImage(item)}
+                  onDetail={() => onNavigate('detail', { article: item })}
+                  onAddToCart={() => { addToCart(item); openCart(); }}
+                  onCommander={() => { addToCart(item); onNavigate('checkout'); }}
+                />
+              ))}
+          </div>
+        )}
 
-        {showAllCatalogue && articles.filter(a => catalogueFilter === 'all' || String(a.categorie?.id) === catalogueFilter).length > visibleCatalogueCount && (
+        {showAllCatalogue && !loading && catalogueItems.length > visibleCatalogueCount && (
           <div className="text-center" style={{ marginTop: '4rem' }}>
             <button 
               className="btn btn-ol" 
               onClick={() => setVisibleCatalogueCount(prev => prev + 4)}
               style={{ minWidth: '200px' }}
             >
-              Show More
+              Afficher plus
             </button>
           </div>
         )}
       </section>
 
+      {/* BRANDS */}
+      <Brands onNavigate={onNavigate} />
+
       {/* TESTIMONIALS */}
-      <div style={{ background: 'var(--ow)', borderTop: '1px solid var(--g2)', borderBottom: '1px solid var(--g2)', padding: 'clamp(3rem,6vw,6rem) 0' }}>
-        <div className="mx">
-          <div className="shd c rv">
-            <div className="stag">Reviews</div>
-            <h2 className="stit">What Clients <em>Say</em></h2>
-          </div>
-          <div className="tgrid">
-            <div className="tc rv">
-              <div className="tc-st">★★★★★</div>
-              <p className="tc-tx">Absolutely obsessed with my new bag. The quality is outstanding — shipping was faster than expected. LUMIÈRE has become my go-to for everything luxe.</p>
-              <div className="tc-au"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80&fit=crop&crop=face" className="tc-av" alt="S" />
-                <div><div className="tc-nm">Sarah M.</div><div className="tc-rl">Fashion Blogger · Paris</div></div>
-              </div>
-            </div>
-            <div className="tc rv d1">
-              <div className="tc-st">★★★★★</div>
-              <p className="tc-tx">The crystal ring is even more beautiful in person. The packaging was immaculate — felt like opening a gift to myself. Five stars, no hesitation.</p>
-              <div className="tc-au"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop&crop=face" className="tc-av" alt="J" />
-                <div><div className="tc-nm">James K.</div><div className="tc-rl">Architect · London</div></div>
-              </div>
-            </div>
-            <div className="tc rv d2">
-              <div className="tc-st">★★★★★</div>
-              <p className="tc-tx">Customer service went above and beyond. The sneakers fit perfectly and the quality rivals brands twice the price. Truly exceptional experience.</p>
-              <div className="tc-au"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80&fit=crop&crop=face" className="tc-av" alt="A" />
-                <div><div className="tc-nm">Amira L.</div><div className="tc-rl">Stylist · Dubai</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Testimonials />
 
       {/* NEWSLETTER */}
       <div className="nl">
         <div className="nl-in rv">
-          <div className="nl-tag"><Mail size={11} /> Stay in the Loop</div>
-          <h2 className="nl-tit">Join the <strong>LUMIÈRE</strong> Club</h2>
-          <p className="nl-sub">Subscribe for early access to new drops, exclusive offers, and styling inspiration delivered weekly.</p>
+          <div className="nl-tag"><Mail size={11} /> Restez informé</div>
+          <h2 className="nl-tit">Rejoignez le club <strong>LUMIÈRE</strong></h2>
+          <p className="nl-sub">Inscrivez-vous pour accéder en avant-première aux nouveautés, à des offres exclusives et à nos conseils style chaque semaine.</p>
           <div className="nl-form">
-            <input className="nl-inp" type="email" placeholder="Your email address…" />
-            <button className="btn btn-pr">Subscribe</button>
+            <input className="nl-inp" type="email" placeholder="Votre adresse e-mail…" />
+            <button className="btn btn-pr">S’abonner</button>
           </div>
-          <p className="nl-note">No spam, ever. Unsubscribe anytime.</p>
+          <p className="nl-note">Jamais de spam. Désinscription à tout moment.</p>
         </div>
       </div>
     </div>
